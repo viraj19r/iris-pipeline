@@ -5,3 +5,4 @@ joblib
 pytest
 dvc[gs]
 google-cloud-storage
+cml
