@@ -1,0 +1,51 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest dvc[gcs] cml
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+          export_default_credentials: true
+
+      - name: Configure DVC remote
+        run: |
+          dvc pull -r gcsremote || echo "Skipping DVC pull if remote not found"
+
+      - name: Run tests
+        run: |
+          pytest --junitxml=report.xml > result.log || true
+
+      - name: Create CML report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## 🧪 CI Report" > report.md
+          echo "### Branch: ${{ github.ref_name }}" >> report.md
+          echo "" >> report.md
+          cat result.log >> report.md
+          npx cml comment create report.md
