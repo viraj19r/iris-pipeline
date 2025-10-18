@@ -23,13 +23,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install dvc[gcs] cml pytest
 
-      - name: Setup gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v1
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
-          export_default_credentials: true
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
 
       - name: Configure DVC remote
         run: |
@@ -47,4 +46,4 @@ jobs:
           echo "### Branch: ${{ github.ref_name }}" >> report.md
           echo "" >> report.md
           cat result.log >> report.md
-          npx cml comment create report.md
+          python -m cml comment create report.md
