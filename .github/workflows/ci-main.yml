@@ -23,7 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install dvc[gcs] cml pytest
+          pip install cml
 
       - name: Authenticate with GCP
         uses: google-github-actions/auth@v1
