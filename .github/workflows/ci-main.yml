@@ -46,7 +46,6 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "## 🧪 CI Report" > report.md
-          echo "### Branch: ${{ github.ref_name }}" >> report.md
           echo "" >> report.md
           cat test_output.txt >> report.md
           cml comment create --publish report.md
