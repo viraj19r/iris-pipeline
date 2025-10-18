@@ -39,7 +39,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest tests/ 2>&1 > test_output.txt
+          pytest tests/ > test_output.txt  2>&1
 
       - name: Create CML report
         env:
@@ -48,5 +48,5 @@ jobs:
           echo "## 🧪 CI Report" > report.md
           echo "### Branch: ${{ github.ref_name }}" >> report.md
           echo "" >> report.md
-          cat result.log >> report.md
+          cat test_output.txt >> report.md
           cml comment create --publish report.md
