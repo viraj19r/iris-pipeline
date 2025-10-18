@@ -39,7 +39,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest test/ 2>&1 > test_output.txt
+          pytest tests/ 2>&1 > test_output.txt
 
       - name: Create CML report
         env:
