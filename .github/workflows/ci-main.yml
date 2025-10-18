@@ -17,7 +17,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.10"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
       - name: Install dependencies
         run: |
@@ -45,4 +50,4 @@ jobs:
           echo "### Branch: ${{ github.ref_name }}" >> report.md
           echo "" >> report.md
           cat result.log >> report.md
-          python -m cml comment create report.md
+          npx cml comment create report.md
