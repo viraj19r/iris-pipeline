@@ -76,7 +76,6 @@ kombu==5.5.4
 markdown-it-py==4.0.0
 mdurl==0.1.2
 multidict==6.6.4
-networkx==3.5
 numpy==2.3.3
 oauthlib==3.3.1
 omegaconf==2.3.0
