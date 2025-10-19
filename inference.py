@@ -1,11 +1,9 @@
-import json
 import joblib
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-
-def run_inference(data_path: str, model_path: str, metrics_path: str = "metrics.json"):
-    """Run inference using the trained DecisionTree model and save evaluation metrics."""
+def run_inference(data_path: str, model_path: str):
+    """Run inference using the trained DecisionTree model and print evaluation metrics."""
 
     # Load model
     print(f"🔹 Loading model from {model_path} ...")
@@ -24,23 +22,13 @@ def run_inference(data_path: str, model_path: str, metrics_path: str = "metrics.
 
     # Compute metrics
     accuracy = round(accuracy_score(y_true, y_pred), 4)
-    print(f"✅ Accuracy: {accuracy}")
+    print(f"✅ Accuracy: {accuracy}\n")
 
-    report = classification_report(y_true, y_pred, output_dict=True)
-    cm = confusion_matrix(y_true, y_pred).tolist()
+    print("Classification Report:")
+    print(classification_report(y_true, y_pred))
 
-    # Prepare metrics dictionary
-    metrics_dict = {
-        "accuracy": accuracy,
-        "classification_report": report,
-        "confusion_matrix": cm
-    }
-
-    # Save metrics to JSON file
-    with open(metrics_path, "w") as f:
-        json.dump(metrics_dict, f, indent=2)
-
-    print(f"📊 Metrics saved to {metrics_path}")
+    print("Confusion Matrix:")
+    print(confusion_matrix(y_true, y_pred))
 
 
 if __name__ == "__main__":
