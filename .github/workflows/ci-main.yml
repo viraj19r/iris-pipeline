@@ -39,17 +39,13 @@ jobs:
 
       - name: Run tests
         run: |
-          echo "=================== TEST EXECUTION STARTED ===================" > test_output.txt
           pytest -q --tb=short -W ignore tests/ >> test_output.txt 2>&1
           echo "" >> test_output.txt
-          echo "==================== TEST EXECUTION DONE =====================" >> test_output.txt
 
 
       - name: Run inference and append output
         run: |
-          echo "=================== MODEL INFERENCE ===================" > inference_output.txt
           python inference.py >> inference_output.txt 2>&1
-          echo "=================== INFERENCE DONE ===================" >> inference_output.txt
 
 
       - name: Create CML report
