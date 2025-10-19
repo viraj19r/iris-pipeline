@@ -45,7 +45,7 @@ jobs:
           echo "==================== TEST EXECUTION DONE =====================" >> test_output.txt
       - name: Run inference and save metrics
         run: |
-          python scripts/inference.py
+          python inference.py
           echo "Inference metrics:" > metrics_output.txt
           cat metrics.json >> metrics_output.txt
 
