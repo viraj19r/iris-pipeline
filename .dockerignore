@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.pytest_cache
+.dvc/cache
+
+# Git and GitHub
+.git
+.github
+
+# Tests and local data
+tests/
+data/
+
+# README
+README.md

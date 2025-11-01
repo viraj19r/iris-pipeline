@@ -1,0 +1,64 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+env:
+  GCP_PROJECT_ID: southern-lane-473106-m4 # TODO: Replace with your GCP project ID
+  GKE_CLUSTER: iris-cluster   # TODO: Replace with your GKE cluster name
+  GKE_ZONE: us-central1      # TODO: Replace with your GKE cluster zone
+  ARTIFACT_REGISTRY_REGION: us-central1 # TODO: Replace with your Artifact Registry region (e.g., us-central1)
+  ARTIFACT_REGISTRY_REPOSITORY: iris-api-repo # TODO: Replace with your repo name
+  DEPLOYMENT_NAME: iris-api-deployment
+  IMAGE_NAME: iris-api
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+
+    # Add permissions for the job to authenticate with GCP
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Authenticate with GCP
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
+
+    - name: Set up Cloud SDK
+      uses: 'google-github-actions/setup-gcloud@v1'
+
+    # Configure Docker to use the gcloud credential helper
+    - name: Configure Docker
+      run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
+
+    # Build and push the Docker image to Google Artifact Registry
+    - name: Build and Push Image
+      run: |
+        docker build -t ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        docker push ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |-
+        # Define the full image name
+        IMAGE_TAG="${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+
+        # Update the image tag in the Kubernetes deployment manifest
+        sed -i "s|image:.*|image: ${IMAGE_TAG}|" k8s/deployment.yaml
+
+        gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+        
+        # Apply all manifests in the k8s directory and trigger a rolling update
+        kubectl apply -k k8s/
+        
+        # Wait for the rollout to complete
+        kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }}

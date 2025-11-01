@@ -5,3 +5,5 @@ joblib
 pytest
 dvc[gs]
 google-cloud-storage
+fastapi
+uvicorn
