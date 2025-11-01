@@ -39,7 +39,7 @@ jobs:
     # Install the GKE gcloud auth plugin
     - name: Install GKE Auth Plugin
       run: gcloud components install gke-gcloud-auth-plugin
-
+`
     # Configure Docker to use the gcloud credential helper
     - name: Configure Docker
       run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
