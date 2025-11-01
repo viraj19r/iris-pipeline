@@ -15,13 +15,13 @@ env:
 
 jobs:
   build-and-deploy:
-    name: Build and Deploy
+    name: Build and Deploy Iris Pipeline
     runs-on: ubuntu-latest
 
     # Add permissions for the job to authenticate with GCP
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    # permissions:
+    #   contents: 'read'
+    #   id-token: 'write'
 
     steps:
     - name: Checkout
