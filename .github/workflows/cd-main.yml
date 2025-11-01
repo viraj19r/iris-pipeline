@@ -2,7 +2,7 @@ name: CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
 
 env:
   GCP_PROJECT_ID: southern-lane-473106-m4 # TODO: Replace with your GCP project ID
@@ -35,6 +35,10 @@ jobs:
 
     - name: Set up Cloud SDK
       uses: 'google-github-actions/setup-gcloud@v1'
+
+    # Install the GKE gcloud auth plugin
+    - name: Install GKE Auth Plugin
+      run: gcloud components install gke-gcloud-auth-plugin
 
     # Configure Docker to use the gcloud credential helper
     - name: Configure Docker

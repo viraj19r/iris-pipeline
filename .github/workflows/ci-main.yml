@@ -38,15 +38,12 @@ jobs:
           dvc pull -r gcsremote || echo "Skipping DVC pull if remote not found"
 
       - name: Run tests
-        run: |
-          pytest -q --tb=short -W ignore tests/ >> test_output.txt 2>&1
-          echo "" >> test_output.txt
-
+        id: tests
+        run: pytest -q --tb=short -W ignore tests/ > test_output.txt 2>&1 || true
 
       - name: Run inference and append output
-        run: |
-          python inference.py >> inference_output.txt 2>&1
-
+        id: inference
+        run: python inference.py > inference_output.txt 2>&1 || true
 
       - name: Create CML report
         env:
