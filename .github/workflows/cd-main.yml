@@ -39,7 +39,7 @@ jobs:
         python-version: "3.9"
 
     - name: Install DVC
-      run: pip install dvc[gcs]
+      run: pip install dvc[gs]
 
     - name: Pull DVC tracked files
       run: |
