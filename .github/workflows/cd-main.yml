@@ -33,6 +33,18 @@ jobs:
       with:
         credentials_json: '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}'
 
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Install DVC
+      run: pip install dvc[gcs]
+
+    - name: Pull DVC tracked files
+      run: |
+        dvc pull -r gcsremote
+
     - name: Set up Cloud SDK
       uses: 'google-github-actions/setup-gcloud@v1'
 
