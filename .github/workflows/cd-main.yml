@@ -5,23 +5,23 @@ on:
     branches: [main]
 
 env:
-  GCP_PROJECT_ID: southern-lane-473106-m4 # TODO: Replace with your GCP project ID
-  GKE_CLUSTER: iris-cluster   # TODO: Replace with your GKE cluster name
-  GKE_ZONE: us-central1      # TODO: Replace with your GKE cluster zone
-  ARTIFACT_REGISTRY_REGION: us-central1 # TODO: Replace with your Artifact Registry region (e.g., us-central1)
-  ARTIFACT_REGISTRY_REPOSITORY: iris-api-repo # TODO: Replace with your repo name
+  GCP_PROJECT_ID: southern-lane-473106-m4
+  GKE_CLUSTER: iris-cluster  
+  GKE_ZONE: us-central1     
+  ARTIFACT_REGISTRY_REGION: us-central1 
+  ARTIFACT_REGISTRY_REPOSITORY: iris-api-repo
   DEPLOYMENT_NAME: iris-api-deployment
   IMAGE_NAME: iris-api
 
 jobs:
   build-and-deploy:
-    name: Build and Deploy
+    name: Build and Deploy Iris Pipeline
     runs-on: ubuntu-latest
 
     # Add permissions for the job to authenticate with GCP
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    # permissions:
+    #   contents: 'read'
+    #   id-token: 'write'
 
     steps:
     - name: Checkout
@@ -35,6 +35,10 @@ jobs:
 
     - name: Set up Cloud SDK
       uses: 'google-github-actions/setup-gcloud@v1'
+
+    # Install the GKE gcloud auth plugin
+    - name: Install GKE Auth Plugin
+      run: gcloud components install gke-gcloud-auth-plugin
 
     # Configure Docker to use the gcloud credential helper
     - name: Configure Docker
