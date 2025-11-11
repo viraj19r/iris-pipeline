@@ -7,3 +7,5 @@ dvc[gs]
 google-cloud-storage
 fastapi
 uvicorn
+pydantic
+opentelemetry-exporter-gcp-trace

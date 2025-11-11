@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  GCP_PROJECT_ID: southern-lane-473106-m4
+  GCP_PROJECT_ID: southern-lane-473106-m4 # <-- TODO: Replace with your actual GCP Project ID
   GKE_CLUSTER: iris-cluster  
   GKE_ZONE: us-central1     
   ARTIFACT_REGISTRY_REGION: us-central1 

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: iris-api-deployment
 spec:
-  replicas: 2 # Run 2 instances of our application
+  replicas: 1 # Run 2 instances of our application
   selector:
     matchLabels:
       app: iris-api
@@ -12,9 +12,28 @@ spec:
       labels:
         app: iris-api
     spec:
+      serviceAccountName: telemetry-access # Required for permissions to send traces
       containers:
       - name: iris-api
-        image: us-central1-docker.pkg.dev/southern-lane-473106-m4/iris-api-repo/iris-api:manual-test # Placeholder for your image
+        image: us-central1-docker.pkg.dev/southern-lane-473106-m4/iris-api-repo/demo_log:v1 # Use a specific tag instead of :latest
         ports:
         - containerPort: 80
-
+        readinessProbe:
+          httpGet:
+            path: /ready_check
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /live_check
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
